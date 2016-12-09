@@ -81,6 +81,9 @@ sed 's/\([^,]*,\)\{7\}[^,]*,/&\n/g'                 # Replace the 8th comma with
 sort -k2                                            # Sort by the second column
 sort -n -u -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4         # Sort IPs
 sed "s/$FOO./$FOO/g"                                # Variables - use double quotes with sed or grep
+
+# Special characters to escape
+~|`|!|@|#|\$|%|\^|&|\*|\(|\)|_|-|\+|=|{|\[|}|]|\|:|;|"|<|,|>|\.|\?|/|
 ------------------------------------------------------------------------------------------------------
 
 # Check for argument. If not given, print usage.
@@ -137,7 +140,7 @@ fi
 
 if [[ $port -lt 1 || $port -gt 65535 ]]; then
      echo "Invalid port."
-	exit
+     exit
 fi
 ------------------------------------------------------------------------------------------------------
 
@@ -184,11 +187,11 @@ fi
 # Set variable.
 
 if [ "$payload" == "1" ]; then
-	format="raw"
-	platform="android"
+     format="raw"
+     platform="android"
 else
-	format="exe"
-	platform="windows"
+     format="exe"
+     platform="windows"
 fi
 
 ------------------------------------------------------------------------------------------------------
@@ -204,8 +207,12 @@ fi
 
 # Read in a file and do something.
 
+for i in $(cat tmp); do 
+     sudo chown -R $(whoami) $i
+done
+
 while read -r line; do
-	host $line | grep 'has address' | cut -d ' ' -f4
+     host $line | grep 'has address' | cut -d ' ' -f4
 done < subdomains.txt
 
 while read -r line; do

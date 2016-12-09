@@ -1,10 +1,7 @@
-Follow on Twitter @discoverscripts
+Follow on Twitter [![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=Follow&maxAge=25920)](https://twitter.com/discoverscripts) <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT licsense" width="100" height="20">
+
 
 For use with Kali Linux. Custom bash scripts used to automate various pentesting tasks.
-
-# License
-
-This project is licensed under the MIT License (MIT).
 
 ### Download, setup & usage
 * git clone https://github.com/leebaird/discover /opt/discover/
@@ -22,20 +19,21 @@ SCANNING
 4.  Generate target list
 5.  CIDR
 6.  List
-7.  IP or domain
+7.  IP, range, or domain
+8.  Rerun Nmap scripts and MSF aux.
 
 WEB
-8.  Open multiple tabs in Firefox
-9.  Nikto
-10. SSL
+9.  Open multiple tabs in Firefox
+10. Nikto
+11. SSL
 
 MISC
-11. Crack WiFi
-12. Parse XML
-13. Generate a malicious payload
-14. Start a Metasploit listener
-15. Update
-16. Exit
+12. Crack WiFi
+13. Parse XML
+14. Generate a malicious payload
+15. Start a Metasploit listener
+16. Update
+17. Exit
 ```
 ## RECON
 ### Domain
@@ -47,10 +45,12 @@ RECON
 3.  Previous menu
 ```
 
-* Passive uses ARIN, dnsrecon, goofile, goog-mail, goohost, theHarvester, Metasploit, URLCrazy, Whois, multiple websites, and recon-ng.
+* Passive uses ARIN, dnsrecon, goofile, goog-mail, goohost, theHarvester,
+     Metasploit, URLCrazy, Whois, multiple websites, and recon-ng.
 * Active uses Nmap, dnsrecon, Fierce, lbd, WAF00W, traceroute, and Whatweb.
 
-* Acquire API keys for Bing, Builtwith, Fullcontact, GitHub, Google, Hashes, and Shodan for maximum results with recon-ng.
+* Acquire API keys for Bing, Builtwith, Fullcontact, GitHub, Google, Hashes, 
+     and Shodan for maximum results with recon-ng.
 
 ```
   recon-ng
@@ -100,7 +100,7 @@ SCANNING
 
 * Use different tools to create a target list including Angry IP Scanner, arp-scan, netdiscover and nmap pingsweep.
 
-### CIDR, List, IP or domain
+### CIDR, List, IP, Range, or URL
 ```
 Type of scan:
 
@@ -113,6 +113,7 @@ Type of scan:
 * Internal scan will set the nmap source port to 88 and the max-rrt-timeout to 500ms.
 * Nmap is used to perform host discovery, port scanning, service enumeration and OS identification.
 * Matching nmap scripts are used for additional enumeration.
+* Addition tools: enum4linux, smbclient, and ike-scan.
 * Matching Metasploit auxiliary modules are also leveraged.
 
 ## WEB
@@ -172,9 +173,10 @@ MALICIOUS PAYLOADS
 3.  linux/x64/shell_reverse_tcp
 4.  linux/x86/meterpreter/reverse_tcp
 5.  osx/x64/shell_reverse_tcp
-6.  windows/meterpreter/reverse_tcp
-7.  windows/x64/meterpreter/reverse_tcp
-8.  Previous menu
+6.  php/meterpreter/reverse_tcp
+7.  windows/meterpreter/reverse_tcp
+8.  windows/x64/meterpreter/reverse_tcp
+9.  Previous menu
 ```
 
 ### Start a Metasploit listener
@@ -186,9 +188,10 @@ Metasploit LISTENERS
 3.  linux/x64/shell_reverse_tcp
 4.  linux/x86/meterpreter/reverse_tcp
 5.  osx/x64/shell_reverse_tcp
-6.  windows/meterpreter/reverse_tcp
-7.  windows/x64/meterpreter/reverse_tcp
-8.  Previous menu
+6.  php/meterpreter/reverse_tcp
+7.  windows/meterpreter/reverse_tcp
+8.  windows/x64/meterpreter/reverse_tcp
+9.  Previous menu
 ```
 
 ### Update

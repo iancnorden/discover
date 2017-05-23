@@ -29,6 +29,26 @@ fi
 echo -e "\e[1;34mUpdating Kali.\e[0m"
 apt-get update ; apt-get -y upgrade ; apt-get -y dist-upgrade ; apt-get -y autoremove ; apt-get -y autoclean ; echo
 
+if [ -d /opt/BloodHound/.git ]; then
+     echo -e "\e[1;34mUpdating BloodHound.\e[0m"
+     cd /opt/BloodHound/ ; git pull
+     echo
+else
+     echo -e "\e[1;33mInstalling BloodHound.\e[0m"
+     git clone https://github.com/adaptivethreat/BloodHound.git /opt/BloodHound
+     echo
+     echo -e "\e[1;33mInstalling part 2.\e[0m"
+     cd /opt/
+     wget -q https://github.com/adaptivethreat/BloodHound/releases/download/1.1/BloodHound-linux-x64.zip
+     unzip /opt/BloodHound-linux-x64.zip
+     rm /opt/BloodHound-linux-x64.zip
+     echo
+     echo -e "\e[1;33mYou will need to download and install Neo4j once this script completes.\e[0m"
+     read -p "Press <enter> to continue."
+     firefox https://neo4j.com/download/community-edition/ &
+     echo
+fi
+
 if [ -d /opt/CrackMapExec/.git ]; then
      echo -e "\e[1;34mUpdating CrackMapExec.\e[0m"
      cd /opt/CrackMapExec/ ; git pull
@@ -127,12 +147,18 @@ if [ ! -f /usr/bin/xdotool ]; then
 fi
 
 if [ -d /opt/Veil-Evasion/.git ]; then
-     echo -e "\e[1;34mUpdating Veil-Evasion.\e[0m"
-     cd /opt/Veil-Evasion/ ; git pull
+     echo -e "\e[1;33mRemoving Veil-Evasion.\e[0m"
+     rm -rf /opt/Veil-Evasion
+     echo
+fi
+
+if [ -d /opt/Veil/.git ]; then
+     echo -e "\e[1;34mUpdating Veil.\e[0m"
+     cd /opt/Veil/ ; git pull
      echo
 else
-     echo -e "\e[1;33mInstalling Veil-Evasion.\e[0m"
-     git clone https://github.com/Veil-Framework/Veil-Evasion /opt/Veil-Evasion
+     echo -e "\e[1;33mInstalling Veil.\e[0m"
+     git clone https://github.com/Veil-Framework/Veil /opt/Veil
      echo
 fi
 

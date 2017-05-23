@@ -15,7 +15,7 @@ uniq -c                                             # Count the number of differ
 apt-get install xml-twig-tools
 xml_grep ‘firstName' file.xml --text_only           # Extract data from XML element
 
-grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}'              # Find IPs
+grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b'  # Find IPs
 perl -pe 's/\d{2}\/\d{2}\/\d{2}//g'                 # Find dates mm/dd/yy
 
 sed '/[[:blank:]]/d'                                # Find lines that contain a single word
@@ -82,43 +82,39 @@ sort -k2                                            # Sort by the second column
 sort -n -u -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4         # Sort IPs
 sed "s/$FOO./$FOO/g"                                # Variables - use double quotes with sed or grep
 
+tr -d '\t'                                          # Delete a horizontal tab
+tr -s ' '                                           # Squeeze any number of spaces down to a single space?
+tr ',' '\n'                                         # Translate a comma to a new line
+tr '[A-Z]' '[a-z]'                                  # Translate upper case to lower case
+
 # Special characters to escape
 ~|`|!|@|#|\$|%|\^|&|\*|\(|\)|_|-|\+|=|{|\[|}|]|\|:|;|"|<|,|>|\.|\?|/|
 ------------------------------------------------------------------------------------------------------
 
 # Check for argument. If not given, print usage.
-
 if [ -z "$1" ]; then
      echo "Usage : $0 <domain name>"
      exit 0
 fi
-------------------------------------------------------------------------------------------------------
 
 # Check for root.
-
 if [ $(whoami) = "root" ]; then 
      echo "You are running as root."
 fi
-------------------------------------------------------------------------------------------------------
 
 # Check for no answer.
-
 if [ -z $location ]; then
      f_Error
      return 0
 fi
-------------------------------------------------------------------------------------------------------
 
 # Check for wrong answer.
-
 if [ ! -f $location ]; then
      f_Error
      return 0
 fi
-------------------------------------------------------------------------------------------------------
 
 # Check for two variables.
-
 echo -n "Enter color: "
 read color
 echo -n "Enter another color: "
@@ -134,10 +130,13 @@ else
      echo "Those colors are crap."
      echo
 fi
-------------------------------------------------------------------------------------------------------
+
+# Validate input is a number and that it is greather than 0.
+if ! [[ "$number" =~ ^[0-9]+$ ]] || [[ "$number" -le "0" ]]; then
+     f_error
+fi
 
 # Check for valid port number.
-
 if [[ $port -lt 1 || $port -gt 65535 ]]; then
      echo "Invalid port."
      exit
